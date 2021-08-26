@@ -1,10 +1,8 @@
 
-import sys
 import itk
 import vtk
 import argparse
-import subprocess
-import os
+
 
 
 def GetArguments():  
@@ -20,32 +18,31 @@ def ReadImage():
   args = GetArguments()
   print('Reading image: ',args.inputImage)
   pixelType = itk.UC
-  dimension = 2
-  imageType = itk.Image[pixelType, dimension]
+  imageType = itk.Image[pixelType, 2]
   return imageType 
   
 
 def FilterImage(imageType):
   print("Filtering image...")
   args = GetArguments()
+
+  #Filter the image
   reader = itk.ImageFileReader[imageType].New()
   reader.SetFileName(args.inputImage)
   meanFilter = itk.MeanImageFilter[imageType, imageType].New()
   meanFilter.SetInput(reader.GetOutput())
   meanFilter.SetRadius(int(args.radius))
 
+  # Write the output file
   writer = itk.ImageFileWriter[imageType].New()
   writer.SetFileName(args.outputImage)
   writer.SetInput(meanFilter.GetOutput())
-
   writer.Update()
   print("Filtered image created: ",args.outputImage)
 
 def DisplayImage(image1,image2):
 
-
-
-  # Read the source file.
+  # Read the source files.
   reader1 = vtk.vtkPNGReader()
   reader1.SetFileName(image1)
   reader1.Update()
@@ -85,10 +82,6 @@ def main():
   image = ReadImage()
   FilterImage(image)
   DisplayImage(args.inputImage,args.outputImage)
-
-
-
-
 
 if __name__ == '__main__':
   main()
