@@ -26,7 +26,7 @@ def FilterImage(imageType):
   print("Filtering image...")
   args = GetArguments()
 
-  #Filter the image
+  #Apply filter to the image
   reader = itk.ImageFileReader[imageType].New()
   reader.SetFileName(args.inputImage)
   meanFilter = itk.MeanImageFilter[imageType, imageType].New()
